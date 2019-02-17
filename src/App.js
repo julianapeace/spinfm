@@ -1,26 +1,43 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import ReactDOM from 'react-dom'
+import { HashRouter as Router, Route, Switch, Redirect, Link } from 'react-router-dom'
+import { Provider } from 'react-redux'
+
+
+import store from './reducers'
+import Header                 from './components/Header'
+import ScreenLogin            from './screens/ScreenLogin'
+import ScreenLoungeArea       from './screens/ScreenLoungeArea'
+import ScreenCreateUser       from './screens/ScreenCreateUser';
+import ScreenMusicRoom        from './screens/ScreenMusicRoom';
+
+// Dummy function that sets whether the user is logged in or not
+function isLoggedIn(){
+  return false
+}
 
 class App extends Component {
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
+      <Provider store={ store }>
+      <Router>
+        <div className="app">
+          <Switch>
+            <Route exact path="/" render={() => (
+              isLoggedIn() ? (
+                <Redirect to="/screenLoungeArea" />
+              ) : (
+                <ScreenLogin/>
+              )
+            )} />
+            <Route exact path="/screenLogin"          component={ ScreenLogin }/>
+            <Route exact path='/screenCreateUser'     component={ ScreenCreateUser }/>
+            <Route exact path='/screenLoungeArea'     component={ ScreenLoungeArea }/>
+            <Route       path="/room/:networkId"      component={ ScreenMusicRoom }/>
+          </Switch>
+        </div>
+      </Router>
+    </Provider>
     );
   }
 }
